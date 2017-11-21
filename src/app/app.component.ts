@@ -1,4 +1,7 @@
 import { Component } from '@angular/core';
+import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from "angularfire2/firestore";
+import { Observable } from "rxjs/Observable";
+import { map, filter } from "rxjs/Operators";;
 
 @Component({
   selector: 'app-root',
@@ -6,5 +9,10 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'app';
+  
+  constructor(private afs: AngularFirestore) {}
+
+  ngOnInit() {
+
+  }
 }
