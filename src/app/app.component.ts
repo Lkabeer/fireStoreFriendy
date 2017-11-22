@@ -30,6 +30,7 @@ export class AppComponent {
   constructor(private afs: AngularFirestore) {}
 
   ngOnInit() {
+    // this.postsCol = this.afs.collection('posts', ref => ref.where('title', '==', 'coursetro'));    
     this.postsCol = this.afs.collection('posts');
     this.posts = this.postsCol.snapshotChanges()
                   .map(actions => {
@@ -42,7 +43,10 @@ export class AppComponent {
   }
 
   addPost() {
+    // this.afs.collection('posts').doc('X-Team-').set({'title': this.title, 'content': this.content});    
     this.afs.collection('posts').add({'title': this.title, 'content': this.content});
+    this.title = '';
+    this.content = '';
   }
 
   getPost(postId) {
