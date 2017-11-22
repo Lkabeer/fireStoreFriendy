@@ -1,7 +1,16 @@
 import { Component } from '@angular/core';
 import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from "angularfire2/firestore";
 import { Observable } from "rxjs/Observable";
-import { map, filter } from "rxjs/Operators";;
+import { map, filter } from "rxjs/Operators";
+
+interface Post {
+  title: string;
+  content: string
+}
+
+interface PostId extends Post {
+  id: string;
+}
 
 @Component({
   selector: 'app-root',
@@ -9,10 +18,39 @@ import { map, filter } from "rxjs/Operators";;
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+
+  title: string;
+  content: string;
+
+  postsCol: AngularFirestoreCollection<Post>;
+  postDoc: AngularFirestoreDocument<Post>;
+  posts: any;
+  post: Observable<Post>;
   
   constructor(private afs: AngularFirestore) {}
 
   ngOnInit() {
+    this.postsCol = this.afs.collection('posts');
+    this.posts = this.postsCol.snapshotChanges()
+                  .map(actions => {
+                    return actions.map(a => {
+                      const data = a.payload.doc.data() as Post;
+                      const id = a.payload.doc.id;
+                      return { id, data };
+                    });
+                  });
+  }
 
+  addPost() {
+    this.afs.collection('posts').add({'title': this.title, 'content': this.content});
+  }
+
+  getPost(postId) {
+    this.postDoc = this.afs.doc('posts/' + postId);
+    this.post = this.postDoc.valueChanges();
+  }
+
+  deletePost(postId) {
+    this.afs.doc('posts/' + postId).delete();
   }
 }
